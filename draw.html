@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head><style>
+button{transform:translate(30px,0px); */
+display:inline-block;}
+div{transform: translate(570px,-400px);
+border: 1px solid;
+height:300px;
+width:300px;}
+p{text-align: center}
+input{transform: translate(120px,0px);}
+</style></head>
+<body>
+
+<canvas id="canvas" width="500" height="500" style="border:1px solid #000000;">
+Your browser does not support the HTML5 canvas tag.
+</canvas>
+<div>
+  <p>Shapes:</p>
+<button type="button" name="lines" onclick="drawlines()">Lines</button>
+<button type="button"  onclick="drawRect()">Rectangle</button>
+
+<button type="button"  onclick="drawcir()">circle</button>
+<button type="button"  onclick="free()">freedraw</button>
+<button type="button" onclick="erase()">eraser</button>
+<p>color:</p>
+<input id="colour" type="color" onchange="setcolour()" align="center"/>
+</div>
+<script type="text/javascript">
+  var c = document.getElementById("canvas");
+  var ctx= c.getContext("2d");
+  var client = c.getBoundingClientRect();
+ var set,draw,reset,startLine,endLine,startRect,endRect,startcir,endcir;
+ function setcolour(){
+ ctx.strokeStyle=document.getElementById("colour").value;
+ //ctx2.strokeStyle=document.getElementById("colour").value;
+ //ctx3.strokeStyle=document.getElementById("colour").value;
+
+
+ }
+  function drawlines(){
+    setcolour();
+    c.removeEventListener("mousedown",set);
+    c.removeEventListener("mousemove",draw);
+    c.removeEventListener("mouseup",reset);
+
+  c.removeEventListener("mousedown",startRect);
+    c.removeEventListener("mouseup",endRect);
+    c.removeEventListener("mousedown",startcir);
+      c.removeEventListener("mouseup",endcir);
+
+   startLine = function(event){
+    var x= event.clientX;
+    var y= event.clientY;
+ctx.beginPath();
+    ctx.moveTo(x,y);
+
+
+   }
+endLine = function(event){
+var x = event.clientX;
+var y = event.clientY;
+
+ctx.lineTo(x,y);
+ctx.stroke();
+ctx.closePath();
+}
+c.addEventListener("mousedown",startLine);
+c.addEventListener("mouseup",endLine);
+
+
+  }
+  function drawRect(){
+    setcolour();
+    c.removeEventListener("mousedown",set);
+    c.removeEventListener("mousemove",draw);
+    c.removeEventListener("mouseup",reset);
+
+    c.removeEventListener("mousedown",startLine);
+    c.removeEventListener("mouseup",endLine);
+    c.removeEventListener("mousedown",startcir);
+      c.removeEventListener("mouseup",endcir);
+
+
+    var x1,y1;
+    startRect=function(event){
+    x1 = event.clientX-client.left;
+     y1 = event.clientY-client.top;
+
+    //ctx.moveTo(x,y);
+    }
+
+    endRect= function(event){
+    var x2 = event.clientX-client.left;
+    var y2 = event.clientY-client.top;
+    ctx.beginPath();
+    ctx.rect(x1,y1,x2-x1,y2-y1);
+    ctx.stroke();
+    ctx.closePath();
+    }
+    c.addEventListener("mousedown",startRect);
+    c.addEventListener("mouseup",endRect);
+
+
+
+  }
+  function drawcir(){
+    var x2,y2;
+    setcolour();
+    c.removeEventListener("mousedown",set);
+    c.removeEventListener("mousemove",draw);
+    c.removeEventListener("mouseup",reset);
+
+    c.removeEventListener("mousedown",startLine);
+      c.removeEventListener("mouseup",endLine);
+      c.removeEventListener("mousedown",startRect);
+        c.removeEventListener("mouseup",endRect);
+
+
+    startcir=function(event){
+    x2 = event.clientX-client.left;
+     y2 = event.clientY-client.top;
+
+    //ctx.moveTo(x,y);
+    }
+
+    endcir = function(event){
+    var x3 = event.clientX-client.left;
+    var y3 = event.clientY-client.top;
+    var r=Math.sqrt(Math.pow(x2-x3,2)+Math.pow(y2-y3,2));
+
+    ctx.beginPath();
+    ctx.arc(x2,y2,r,0,2*Math.PI);
+    ctx.stroke();
+    ctx.closePath();
+
+    }
+    c.addEventListener("mousedown",startcir);
+    c.addEventListener("mouseup",endcir);
+
+
+
+  }
+  function free(){
+    c.removeEventListener("mousedown",startLine);
+      c.removeEventListener("mouseup",endLine);
+      c.removeEventListener("mousedown",startRect);
+        c.removeEventListener("mouseup",endRect);
+        c.removeEventListener("mousedown",startcir);
+        c.removeEventListener("mouseup",endcir);
+
+var drawing=false,x4,y4;
+set = function(event){
+drawing=true;
+ x4=event.clientX;
+ y4=event.clientY;
+
+}
+draw= function(event){
+if(drawing == false)
+return;
+ctx.beginPath();
+ctx.moveTo(x4,y4);
+
+ctx.lineTo(event.offsetX,event.offsetY);
+ctx.stroke();
+x4=event.offsetX;
+y4=event.offsetY;
+ctx.closePath();
+ // x4=event.clientX;
+ // y4=event.clientY;
+
+  }
+reset = function(event){
+drawing=false;
+
+
+}
+c.addEventListener("mousedown",set);
+c.addEventListener("mousemove",draw);
+c.addEventListener("mouseup",reset);
+
+
+
+
+
+
+  }
+  function erase(){
+
+    ctx.strokeStyle="#ffffff";
+    ctx.linewidth="3";
+    free();
+  }
+</script>
+</body>
+</html>
